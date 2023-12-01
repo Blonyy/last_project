@@ -5,15 +5,15 @@ from datetime import datetime
 import json
 
 class CarPark:
-    def __init__(self, location, capacity=0, log_file = 'log.txt', plates = None, sensors=None, displays=None):
+    def __init__(self, location, capacity=0, log_file =Path('log.txt'), plates = None, sensors=None, displays=None):
         self.location = location
         self.capacity = capacity
         self.plates = plates or []
         self.sensors = sensors or []
         self.displays = displays or []
-        self.log_file = Path(log_file)
-        if not self.log_file.exists():
-            self.log_file.touch()
+        self.log_file = log_file if isinstance(log_file, Path) else Path(log_file)
+        # create the file if it doesn't exist:
+        self.log_file.touch(exist_ok=True)
 
     def to_json(self, file_name):
         with open(file_name, "w") as file:
@@ -57,7 +57,8 @@ class CarPark:
 
     def add_car(self, plate):
         self.plates.append(plate)
-        self._log_car("entered", plate)
+        self.update_displays()
+        self._log_car_activity(plate, "entered")
 
     def remove_car(self, plate):
         self.plates.remove(plate)
