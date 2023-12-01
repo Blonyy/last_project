@@ -14,6 +14,7 @@ class TestCarPark(unittest.TestCase):
         self.assertEqual(self.car_park.sensors, [])
         self.assertEqual(self.car_park.displays, [])
         self.assertEqual(self.car_park.available_bays, 100)
+        #self.assertEqual(self.car_park.log_file, Path('log.txt'))
 
     def test_add_car(self):
         self.car_park.add_car("FAKE-001")
@@ -25,6 +26,21 @@ class TestCarPark(unittest.TestCase):
         self.car_park.remove_car("FAKE-001")
         self.assertEqual(self.car_park.plates, [])
         self.assertEqual(self.car_park.available_bays, 100)
+
+    def test_logging_of_cars_entering_car_park(self):
+        self.car_park.add_car("NEW-01")
+        with self.car_park.log_file.open("r") as f:
+            last_write = f.readlines()[-1]
+        self.assertIn("NEW-01", last_write)
+        self.assertIn("entered", last_write)
+
+    def test_logging_of_cars_existing_car_park(self):
+        self.car_park.add_car("NEW-01")
+        self.car_park.remove_car("NEW-01")
+        with self.car_park.log_file.open("r") as f:
+            last_write = f.readlines()[-1]
+        self.assertIn("NEW-01", last_write)
+        self.assertIn("exited", last_write)
 
     def test_overfill_the_car_park(self):
         for i in range(100):
@@ -41,6 +57,12 @@ class TestCarPark(unittest.TestCase):
     def test_removing_a_car_that_does_not_exist(self):
         with self.assertRaises(ValueError):
             self.car_park.remove_car("NO-1")
+
+    def test_register_raises_type_error(self):
+        car_park = self.car_park
+        invalid_component = "Not a Sensor or Display"
+        with self.assertRaises(TypeError):
+            self.car_park.register(invalid_component)
 
 
 if __name__ == "__main__":
