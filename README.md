@@ -13,3 +13,7 @@
 ![Unit tests](images/DisplayError.png)
 
 ![Unit tests](images/DisplayFix.png)
+
+![Added methods to the car park class](images/evidence4.png)
+
+![Main.py output](images/evidence5.png)
