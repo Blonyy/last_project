@@ -51,7 +51,7 @@ class CarPark:
         elif isinstance(component, Display):
             self.displays.append(component)
 
-    def _log_car(self, action, plate):
+    def _log_car_activity(self, action, plate):
         with self.log_file.open(mode='a') as file:
             file.write(f'{plate} {action} on the {datetime.now().strftime("")}')
 
@@ -62,7 +62,7 @@ class CarPark:
 
     def remove_car(self, plate):
         self.plates.remove(plate)
-        self._log_car("exited", plate)
+        self._log_car_activity("exited", plate)
 
     def update_displays(self):
         for display in self.displays:
